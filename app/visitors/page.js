@@ -11,7 +11,7 @@ export default function VisitorsListPage() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+
   const [search, setSearch] = useState("");
   const [filterToday, setFilterToday] = useState(false);
 
@@ -19,71 +19,61 @@ export default function VisitorsListPage() {
      최초 진입
   ================================ */
   useEffect(() => {
-    init();
+    checkSessionAndLoad();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function init() {
+  async function checkSessionAndLoad() {
     setLoading(true);
     setErrorMsg("");
 
     try {
       const { data, error } = await supabase.auth.getSession();
 
+      // 로그인 안 돼 있으면 바로 이동
       if (error || !data?.session) {
         router.replace("/login");
         return;
       }
 
-      const email = data.session.user.email;
-
-      await checkAdmin(email);
+      // 방문자 데이터 로드
       await loadRows();
     } catch (err) {
       setErrorMsg(String(err));
     } finally {
-      // 🔥 이 줄이 핵심
+      // ⭐⭐⭐ 이게 제일 중요
       setLoading(false);
     }
   }
 
   /* ===============================
-     관리자 확인
-  ================================ */
-  async function checkAdmin(email) {
-    const { data, error } = await supabase
-      .from("visitors")
-      .select("is_admin")
-      .eq("email", email)
-      .limit(1)
-      .maybeSingle();
-
-    setIsAdmin(!error && data?.is_admin === true);
-  }
-
-  /* ===============================
-     방문자 목록
+     방문자 목록 로드
   ================================ */
   async function loadRows() {
     const { data, error } = await supabase
       .from("visitors")
-      .select("id, name, company, phone, purpose, visit_time, created_at, status")
+      .select("id, name, company, phone, purpose, visit_time, status")
       .order("created_at", { ascending: false });
 
     if (error) {
       setErrorMsg(error.message);
       setRows([]);
     } else {
+      // 👉 데이터가 없어도 [] 로 들어가고, 로딩 종료됨
       setRows(data ?? []);
     }
   }
 
+  /* ===============================
+     로그아웃
+  ================================ */
   async function handleLogout() {
     await supabase.auth.signOut();
     router.replace("/login");
   }
 
   /* ===============================
-     필터
+     필터 / 검색
   ================================ */
   const rowsToShow = rows
     .filter((r) => {
@@ -118,7 +108,9 @@ export default function VisitorsListPage() {
   ================================ */
   return (
     <div style={{ padding: 20 }}>
-      <button onClick={handleLogout}>로그아웃</button>
+      <button onClick={handleLogout} style={{ marginBottom: 12 }}>
+        로그아웃
+      </button>
 
       <h1>방문자 목록</h1>
 
@@ -132,21 +124,24 @@ export default function VisitorsListPage() {
           오늘 방문만
         </label>{" "}
         <input
-          placeholder="검색"
+          placeholder="이름/회사/연락처/목적 검색"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
       {loading && <p>로딩 중...</p>}
-      {errorMsg && <p style={{ color: "red" }}>{errorMsg}</p>}
+
+      {!loading && errorMsg && (
+        <p style={{ color: "red" }}>{errorMsg}</p>
+      )}
 
       {!loading && rowsToShow.length === 0 && (
         <p>등록된 방문자가 없습니다.</p>
       )}
 
       {!loading && rowsToShow.length > 0 && (
-        <table border="1" cellPadding="8">
+        <table border="1" cellPadding="8" style={{ width: "100%" }}>
           <thead>
             <tr>
               <th>이름</th>
