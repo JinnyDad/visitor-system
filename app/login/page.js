@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -14,7 +14,10 @@ export default function LoginPage() {
     e.preventDefault();
     setMessage("");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    // ⭐ 여기서 Supabase 생성 (브라우저에서만)
+    const supabase = getSupabaseClient();
+
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -24,8 +27,7 @@ export default function LoginPage() {
       return;
     }
 
-    // 로그인 성공 → 홈 또는 관리자 페이지로 이동
-    router.push("/visitors"); 
+    router.push("/visitors");
   }
 
   return (
@@ -49,10 +51,7 @@ export default function LoginPage() {
           style={{ width: "100%", padding: 8, marginBottom: 12 }}
         />
 
-        <button
-          type="submit"
-          style={{ padding: 10, width: "100%" }}
-        >
+        <button type="submit" style={{ padding: 10, width: "100%" }}>
           로그인
         </button>
       </form>
