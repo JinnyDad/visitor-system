@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
 // CSV 변환 함수
@@ -45,6 +45,8 @@ export default function VisitorsListPage() {
 async function checkAdmin(email) {
   console.log("관리자 체크 이메일:", email);
 
+  const supabase = getSupabaseClient();
+  
   const { data, error } = await supabase
     .from("visitors")
     .select("is_admin")

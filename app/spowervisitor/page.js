@@ -1,6 +1,6 @@
 "use client";
 
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 import { useState } from "react";
 
 export default function VisitorPage() {
@@ -20,6 +20,8 @@ export default function VisitorPage() {
     const purpose = formData.get("purpose");
     const visit_time = formData.get("visit_time");
 
+    const supabase = getSupabaseClient();
+    
     const { error } = await supabase.from("visitors").insert({
       name,
       phone,
