@@ -34,7 +34,7 @@ export default function VisitorsListPage() {
 
       // 로그인 안 돼 있으면 바로 이동
       if (error || !data?.session) {
-        router.replace("/login");
+        router.replace("/temp-login");
         return;
       }
 
@@ -71,7 +71,7 @@ export default function VisitorsListPage() {
   ================================ */
   async function handleLogout() {
     await supabase.auth.signOut();
-    router.replace("/login");
+    router.replace("/temp-login");
   }
 
   /* ===============================

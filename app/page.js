@@ -42,7 +42,7 @@ export default function HomePage() {
         </button>
 
         <button 
-          onClick={() => router.push("/login")}
+          onClick={() => router.push("/temp-login")}
           style={{ 
             padding: "10px 20px", 
             fontSize: "14px", 
