@@ -1,5 +1,7 @@
 "use client";
 
+console.log("### VISITORS PAGE NEW VERSION ###");
+
 import { useEffect, useState } from "react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
