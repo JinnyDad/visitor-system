@@ -10,7 +10,6 @@ function VisitorFormContent() {
   const lang = searchParams.get("lang") || "ko";
   const [loading, setLoading] = useState(false);
 
-  // ⭐ 안내 문구(placeholder) 추가
   const t = {
     ko: { 
       head: "방문신청 등록", 
@@ -50,6 +49,7 @@ function VisitorFormContent() {
     setLoading(false);
   }
 
+  // ⭐ 공통 입력창 스타일 (너비 이탈 방지 핵심)
   const inputStyle = { 
     width: "100%", 
     height: "52px", 
@@ -59,12 +59,12 @@ function VisitorFormContent() {
     marginTop: "6px", 
     marginBottom: "18px", 
     fontSize: "16px", 
-    boxSizing: "border-box", 
+    boxSizing: "border-box", // 패딩을 너비 안에 가두는 핵심 속성
     outline: "none",
     display: "block",
     backgroundColor: "white", 
-    color: "#000000",          // 글자색 검정
-    lineHeight: "52px"         // 중앙 정렬 보강
+    color: "#000000",
+    textAlign: "left"
   };
   
   const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px", display: "block" };
@@ -77,8 +77,8 @@ function VisitorFormContent() {
       </header>
 
       <main style={{ padding: "20px", maxWidth: "450px", margin: "0 auto", boxSizing: "border-box" }}>
-        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", boxSizing: "border-box", width: "100%" }}>
-          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", boxSizing: "border-box" }}>
+          <form onSubmit={handleSubmit}>
             <label style={labelStyle}>{cur.name}</label>
             <input type="text" name="name" required placeholder={cur.nameP} style={inputStyle} />
             
@@ -95,12 +95,21 @@ function VisitorFormContent() {
             <input type="text" name="purpose" required placeholder={cur.purposeP} style={inputStyle} />
             
             <label style={labelStyle}>{cur.time}</label>
-            <input 
-              type="datetime-local" 
-              name="visit_time" 
-              required 
-              style={{...inputStyle, color: "#000000"}} 
-            />
+            {/* ⭐ 날짜 입력창 특수 봉인 처리 */}
+            <div style={{ position: "relative", width: "100%" }}>
+              <input 
+                type="datetime-local" 
+                name="visit_time" 
+                required 
+                style={{
+                  ...inputStyle,
+                  color: "#000000",
+                  lineHeight: "1.2", // 텍스트 중앙 위치 유도
+                  paddingTop: "14px", // 상단 여백으로 중앙 맞춤
+                  paddingBottom: "14px"
+                }} 
+              />
+            </div>
             
             <button type="submit" disabled={loading} style={{ width: "100%", height: "56px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "18px", fontWeight: "600", cursor: "pointer", marginTop: "10px" }}>
               {loading ? "..." : cur.btn}
@@ -108,6 +117,22 @@ function VisitorFormContent() {
           </form>
         </div>
       </main>
+
+      {/* ⭐ 브라우저가 강제로 넣는 아이콘들을 숨기는 스타일 태그 추가 */}
+      <style>{`
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+          background: transparent;
+          bottom: 0;
+          color: transparent;
+          cursor: pointer;
+          height: auto;
+          left: 0;
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: auto;
+        }
+      `}</style>
     </div>
   );
 }
