@@ -1,6 +1,5 @@
 "use client";
 
-import { getSupabaseClient } from "@/lib/supabaseClient";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -15,102 +14,52 @@ function VisitorCheckContent() {
   const t = {
     ko: { 
       head: "방문신청 조회", 
-      cardTitle: "신청 현황 확인",
-      cardDesc: "등록하신 성함과 연락처를 입력해주세요.",
-      nameP: "성함을 입력해주세요",
-      phoneP: "연락처를 입력해주세요 (010-0000-0000)",
-      btnSearch: "조회하기",
-      noData: "조회된 신청 내역이 없습니다."
+      cardTitle: "신청 현황 확인", 
+      cardDesc: "등록하신 성함과 연락처를 입력해주세요.", 
+      nameP: "성함을 입력해주세요", 
+      phoneP: "연락처를 입력해주세요", 
+      btnSearch: "조회하기" 
     },
     en: { 
-      head: "Check Reservation", 
-      cardTitle: "Check Status",
-      cardDesc: "Please enter your name and phone number.",
-      nameP: "Enter your name",
-      phoneP: "Enter your phone number",
-      btnSearch: "Search",
-      noData: "No registration found."
+      head: "Check Status", 
+      cardTitle: "Check Status", 
+      cardDesc: "Please enter your name and phone number.", 
+      nameP: "Your Name", 
+      phoneP: "Your Phone", 
+      btnSearch: "Search" 
     }
   };
   const cur = t[lang];
 
-  // ⭐ 실제 조회 로직 복구
   async function handleSearch(e) {
     e.preventDefault();
     setLoading(true);
-    
-    // 이름과 연락처를 쿼리 스트링으로 들고 결과 페이지(/result)로 이동합니다.
-    // 기존에 만드신 결과 확인 페이지 경로가 /spowervisitor/result 가 맞는지 확인해주세요.
+    // ⭐ 결과 페이지 경로가 /spowervisitor/result 인지 확인하세요. 
+    // 만약 결과 페이지도 경로가 다르다면 이 부분을 수정해야 합니다.
     router.push(`/spowervisitor/result?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lang=${lang}`);
-    
     setLoading(false);
   }
 
   const inputStyle = { 
     width: "100%", height: "52px", padding: "0 16px", borderRadius: "12px", 
     border: "1px solid #e2e8f0", marginBottom: "12px", boxSizing: "border-box", 
-    fontSize: "16px", outline: "none", color: "#000000", backgroundColor: "#ffffff"
+    fontSize: "16px", outline: "none", color: "#000000", backgroundColor: "#ffffff" 
   };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
-      {/* 1. 헤더: 관리자 로그인과 동일한 스타일 */}
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "20px", display: "flex", alignItems: "center" }}>
-        <button 
-          onClick={() => router.push(`/?lang=${lang}`)} 
-          style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px", display: "flex", alignItems: "center" }}
-        >
-          ❮
-        </button>
+        <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px" }}>❮</button>
         <span style={{ fontWeight: "bold", fontSize: "22px" }}>{cur.head}</span>
       </header>
-
-      {/* 2. 메인: 카드를 상단으로 밀착 */}
       <main style={{ padding: "10px 20px", maxWidth: "450px", margin: "0 auto", boxSizing: "border-box" }}>
-        <div style={{ 
-          backgroundColor: "white", 
-          borderRadius: "24px", 
-          padding: "40px 20px", 
-          boxShadow: "0 10px 30px rgba(0,0,0,0.05)", 
-          textAlign: "center", 
-          boxSizing: "border-box",
-          marginTop: "10px" 
-        }}>
-          
-          <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#1e293b", marginBottom: "10px" }}>
-            {cur.cardTitle}
-          </h2>
-          <p style={{ color: "#64748b", marginBottom: "30px", fontSize: "15px" }}>
-            {cur.cardDesc}
-          </p>
-
+        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "40px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", textAlign: "center", boxSizing: "border-box", marginTop: "10px" }}>
+          <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#1e293b", marginBottom: "10px" }}>{cur.cardTitle}</h2>
+          <p style={{ color: "#64748b", marginBottom: "30px", fontSize: "15px" }}>{cur.cardDesc}</p>
           <form onSubmit={handleSearch}>
-            <input 
-              type="text" 
-              placeholder={cur.nameP} 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required 
-              style={inputStyle} 
-            />
-            <input 
-              type="text" 
-              placeholder={cur.phoneP} 
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required 
-              style={inputStyle} 
-            />
-            
-            <button 
-              type="submit" 
-              disabled={loading} 
-              style={{ 
-                width: "100%", height: "54px", backgroundColor: "#1e40af", color: "white", 
-                border: "none", borderRadius: "12px", fontSize: "18px", fontWeight: "bold", 
-                cursor: "pointer", marginTop: "10px" 
-              }}
-            >
+            <input type="text" placeholder={cur.nameP} value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
+            <input type="text" placeholder={cur.phoneP} value={phone} onChange={(e) => setPhone(e.target.value)} required style={inputStyle} />
+            <button type="submit" disabled={loading} style={{ width: "100%", height: "54px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "18px", cursor: "pointer", marginTop: "10px" }}>
               {loading ? "..." : cur.btnSearch}
             </button>
           </form>
@@ -121,9 +70,5 @@ function VisitorCheckContent() {
 }
 
 export default function VisitorCheckPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <VisitorCheckContent />
-    </Suspense>
-  );
+  return <Suspense fallback={<div>Loading...</div>}><VisitorCheckContent /></Suspense>;
 }
