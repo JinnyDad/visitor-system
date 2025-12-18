@@ -12,53 +12,37 @@ export default function LoginPage() {
 
   async function handleLogin(e) {
     e.preventDefault();
-    setMessage("");
-
-    // ⭐ 여기서 Supabase 생성 (브라우저에서만)
     const supabase = getSupabaseClient();
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setMessage("로그인 실패: " + error.message);
-      return;
+      setMessage("실패: " + error.message);
+    } else {
+      router.push("/visitors");
     }
-
-    router.push("/visitors");
   }
 
   return (
-    <div style={{ padding: 20, maxWidth: 400, margin: "0 auto" }}>
-      <h1>로그인</h1>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", display: "flex", flexDirection: "column", fontFamily: "'Pretendard', sans-serif" }}>
+      <header style={{ backgroundColor: "#1e40af", color: "white", padding: "12px 20px" }}>
+        <span style={{ fontWeight: "bold" }}>관리자 로그인</span>
+      </header>
 
-      <form onSubmit={handleLogin}>
-        <label>이메일</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ width: "100%", padding: 8, marginBottom: 12 }}
-        />
+      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+        <div style={{ width: "100%", maxWidth: "400px", backgroundColor: "white", borderRadius: "20px", padding: "40px 24px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
+          <div style={{ textAlign: "center", marginBottom: "30px" }}>
+            <h2 style={{ fontSize: "22px", fontWeight: "bold", color: "#1e293b" }}>S-Power Admin</h2>
+            <p style={{ color: "#64748b", marginTop: "8px" }}>관리자 계정으로 로그인하세요.</p>
+          </div>
 
-        <label>비밀번호</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", padding: 8, marginBottom: 12 }}
-        />
-
-        <button type="submit" style={{ padding: 10, width: "100%" }}>
-          로그인
-        </button>
-      </form>
-
-      {message && (
-        <p style={{ color: "red", marginTop: 12 }}>{message}</p>
-      )}
+          <form onSubmit={handleLogin}>
+            <input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #e2e8f0", marginBottom: "12px" }} />
+            <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid #e2e8f0", marginBottom: "20px" }} />
+            <button type="submit" style={{ width: "100%", padding: "16px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>로그인</button>
+          </form>
+          {message && <p style={{ color: "red", marginTop: "15px", textAlign: "center", fontSize: "14px" }}>{message}</p>}
+        </div>
+      </main>
     </div>
   );
 }
