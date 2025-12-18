@@ -29,19 +29,21 @@ function VisitorCheckContent() {
       btnSearch: "Search" 
     }
   };
-  const cur = t[lang];
+  const cur = t[lang] || t.ko;
 
-  // ⭐ 조회 버튼 클릭 시 실행되는 함수
   async function handleSearch(e) {
     e.preventDefault();
-    if (!name || !phone) return;
+    console.log("조회 시도:", { name, phone }); // 브라우저 콘솔에서 확인 가능
     
     setLoading(true);
-    // 결과 페이지로 파라미터를 담아 이동합니다.
-    // 결과 페이지 경로가 /spowervisitor/result 인지 반드시 확인하세요.
-    const url = `/spowervisitor/result?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lang=${lang}`;
-    console.log("Moving to:", url); // 디버깅용
-    router.push(url);
+    
+    // 결과 페이지 경로가 /spowervisitor/result 인지 확인 필수
+    const targetUrl = `/spowervisitor/result?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lang=${lang}`;
+    
+    console.log("이동할 URL:", targetUrl);
+    router.push(targetUrl);
+    
+    setTimeout(() => setLoading(false), 2000); // 2초 후 로딩 해제 (이동 실패 대비)
   }
 
   const inputStyle = { 
@@ -82,7 +84,11 @@ function VisitorCheckContent() {
             <button 
               type="submit" 
               disabled={loading} 
-              style={{ width: "100%", height: "54px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "18px", cursor: "pointer", marginTop: "10px" }}
+              style={{ 
+                width: "100%", height: "54px", backgroundColor: "#1e40af", color: "white", 
+                border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "18px", 
+                cursor: "pointer", marginTop: "10px", opacity: loading ? 0.7 : 1
+              }}
             >
               {loading ? "조회 중..." : cur.btnSearch}
             </button>
@@ -94,5 +100,9 @@ function VisitorCheckContent() {
 }
 
 export default function VisitorCheckPage() {
-  return <Suspense fallback={<div>Loading...</div>}><VisitorCheckContent /></Suspense>;
+  return (
+    <Suspense fallback={<div style={{ padding: "20px" }}>Loading...</div>}>
+      <VisitorCheckContent />
+    </Suspense>
+  );
 }
