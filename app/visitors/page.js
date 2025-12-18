@@ -44,6 +44,7 @@ export default function VisitorsListPage() {
   }
 
   async function loadRows() {
+    // 새로고침 시 로딩 표시를 보여주기 위해
     const { data, error } = await supabase
       .from("visitors")
       .select("id, name, company, phone, purpose, visit_time, status, car_number, host_name, created_at, checkout_time")
@@ -54,6 +55,13 @@ export default function VisitorsListPage() {
     } else {
       setRows(data ?? []);
     }
+  }
+
+  // ⭐ 수동 새로고침 함수
+  async function handleRefresh() {
+    setLoading(true);
+    await loadRows();
+    setLoading(false);
   }
 
   async function updateStatus(id, newStatus) {
@@ -70,7 +78,7 @@ export default function VisitorsListPage() {
     if (error) {
       alert("변경 실패: " + error.message);
     } else {
-      loadRows(); // 즉시 새로고침하여 인원수 업데이트
+      loadRows();
     }
   }
 
@@ -111,18 +119,27 @@ export default function VisitorsListPage() {
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         
         <header style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", alignItems: "center" }}>
-          <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#1e40af" }}>S-Power 관리 시스템</h1>
+          {/* 제목 원복 */}
+          <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#1e40af" }}>방문객 관리시스템</h1>
           <button onClick={handleLogout} style={{ padding: "6px 12px", backgroundColor: "#64748b", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" }}>로그아웃</button>
         </header>
 
-        {/* ⭐ 현재 방문 인원 실시간 대시보드 */}
+        {/* 현재 방문 인원 현황판 + 새로고침 버튼 */}
         <div style={{ 
           backgroundColor: "#1e40af", color: "white", borderRadius: "16px", padding: "20px", marginBottom: "20px", 
           display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 15px rgba(30, 64, 175, 0.2)" 
         }}>
           <div>
             <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "4px" }}>현재 사내 방문객</div>
-            <div style={{ fontSize: "12px", opacity: 0.7 }}>실시간 입실 현황</div>
+            <button 
+              onClick={handleRefresh}
+              style={{ 
+                background: "rgba(255,255,255,0.2)", border: "none", color: "white", padding: "4px 10px", 
+                borderRadius: "6px", fontSize: "11px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" 
+              }}
+            >
+              🔄 {loading ? "갱신 중..." : "새로고침"}
+            </button>
           </div>
           <div style={{ textAlign: "right" }}>
             <span style={{ fontSize: "32px", fontWeight: "800" }}>{currentVisitorCount}</span>
@@ -142,14 +159,13 @@ export default function VisitorsListPage() {
           />
         </div>
 
-        {loading ? (
+        {loading && rows.length === 0 ? (
           <div style={{ textAlign: "center", padding: "50px", color: "#64748b" }}>데이터 로딩 중...</div>
         ) : rowsToShow.length === 0 ? (
           <div style={{ textAlign: "center", padding: "50px", color: "#64748b", backgroundColor: "white", borderRadius: "16px" }}>내역이 없습니다.</div>
         ) : (
           rowsToShow.map((r) => (
             <div key={r.id} style={{ backgroundColor: "white", borderRadius: "16px", padding: "20px", marginBottom: "15px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-              {/* 카드 내용은 기존과 동일 */}
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
                 <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: "500" }}>{r.visit_time ? new Date(r.visit_time).toLocaleString() : "-"} 예정</span>
                 <span style={{ 
@@ -167,6 +183,12 @@ export default function VisitorsListPage() {
                 <div style={{ gridColumn: "span 2", padding: "8px 0", borderTop: "1px dashed #f1f5f9", marginTop: "5px" }}>
                   방문 대상자: <strong style={{ color: "#1e40af" }}>{r.host_name || "-"}</strong>
                 </div>
+                {/* 방문 완료 시각 표시 로직 추가 */}
+                {r.status === "방문 완료" && r.checkout_time && (
+                   <div style={{ gridColumn: "span 2", fontSize: "12px", color: "#94a3b8", textAlign: "right" }}>
+                   방문종료 시각: {new Date(r.checkout_time).toLocaleString()}
+                 </div>
+                )}
               </div>
 
               <div style={{ display: "flex", gap: "10px", borderTop: "1px solid #f1f5f9", paddingTop: "15px" }}>
