@@ -17,32 +17,35 @@ export default function HomePage() {
       </header>
 
       <main style={{ flex: 1, padding: "0 20px", maxWidth: "450px", width: "100%", boxSizing: "border-box" }}>
-        {/* S-Power 배경 글자 영역 */}
+        {/* S-Power 배경 글자 영역: 시인성 강화 버전 */}
         <div style={{ textAlign: "center", padding: "60px 0 30px 0", userSelect: "none" }}>
           <div style={{ 
-            fontSize: "60px", 
+            fontSize: "64px", 
             fontWeight: "900", 
-            color: "#e2e8f0", 
-            letterSpacing: "-2px",
+            color: "#cbd5e1", // 가독성을 위해 더 진한 색상으로 변경
+            letterSpacing: "-3px",
             lineHeight: "1",
-            textShadow: "1px 1px 0px rgba(255,255,255,0.8)"
+            // 글자를 돋보이게 하는 입체감 효과
+            textShadow: "2px 2px 4px rgba(0,0,0,0.05), -1px -1px 0px rgba(255,255,255,0.8)",
+            opacity: "0.8"
           }}>
             S-Power
           </div>
-          {/* 추가된 보조 문구: 안산복합화력발전소 */}
+          {/* 안산복합화력발전소 문구도 조금 더 또렷하게 */}
           <div style={{ 
-            fontSize: "16px", 
-            fontWeight: "600", 
-            color: "#94a3b8", 
-            marginTop: "8px",
-            letterSpacing: "2px"
+            fontSize: "15px", 
+            fontWeight: "700", 
+            color: "#64748b", // 더 진한 회색
+            marginTop: "12px",
+            letterSpacing: "3px",
+            wordBreak: "keep-all"
           }}>
             안산복합화력발전소
           </div>
         </div>
 
-        {/* 시작하기 카드 */}
-        <div style={{ backgroundColor: "white", borderRadius: "24px", boxShadow: "0 10px 40px rgba(0,0,0,0.06)", padding: "40px 24px", textAlign: "center", marginBottom: "20px" }}>
+        {/* 시작하기 카드 및 나머지 하단 코드는 동일 */}
+        <div style={{ backgroundColor: "white", borderRadius: "24px", boxShadow: "0 10px 40px rgba(0,0,0,0.08)", padding: "40px 24px", textAlign: "center", marginBottom: "20px" }}>
           <p style={{ color: "#64748b", fontSize: "16px", marginBottom: "8px" }}>방문신청을 하시려면</p>
           <h2 style={{ fontSize: "22px", fontWeight: "bold", color: "#1e293b", marginBottom: "30px", lineHeight: "1.4" }}>
             시작하기 버튼을 눌러주세요.
@@ -62,7 +65,7 @@ export default function HomePage() {
         </div>
 
         {/* 방문절차안내 카드 */}
-        <div style={{ backgroundColor: "white", borderRadius: "24px", boxShadow: "0 10px 40px rgba(0,0,0,0.06)", padding: "25px 20px", marginBottom: "40px" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "24px", boxShadow: "0 10px 40px rgba(0,0,0,0.08)", padding: "25px 20px", marginBottom: "40px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "25px", fontWeight: "bold", fontSize: "16px", color: "#1e293b" }}>🔗 방문절차안내</div>
           <div style={{ display: "flex", justifyContent: "space-between", textAlign: "center" }}>
             {["방문신청", "내부승인", "방문수속", "방문"].map((step, i) => (
