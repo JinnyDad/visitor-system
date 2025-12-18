@@ -29,18 +29,34 @@ function VisitorFormContent() {
     setLoading(false);
   }
 
-  // ⭐ 수정된 스타일: boxSizing과 width 조절로 카드 이탈 방지
-  const inputStyle = { width: "100%", height: "52px", padding: "0 14px", borderRadius: "10px", border: "1px solid #e2e8f0", marginTop: "6px", marginBottom: "18px", fontSize: "16px", boxSizing: "border-box" };
-  const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px" };
+  // ⭐ 입력창 스타일: boxSizing 보강으로 이탈 방지
+  const inputStyle = { 
+    width: "100%", 
+    height: "52px", 
+    padding: "0 14px", 
+    borderRadius: "10px", 
+    border: "1px solid #e2e8f0", 
+    marginTop: "6px", 
+    marginBottom: "18px", 
+    fontSize: "16px", 
+    boxSizing: "border-box", // 패딩이 너비에 포함되도록 설정
+    outline: "none",
+    display: "block"
+  };
+  
+  const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px", display: "block" };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
-      <header style={{ backgroundColor: "#1e40af", color: "white", padding: "18px 20px", display: "flex", alignItems: "center" }}>
-        <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "22px", cursor: "pointer", marginRight: "15px" }}>❮</button>
-        <span style={{ fontWeight: "bold", fontSize: "20px" }}>{cur.head}</span>
+      {/* ⭐ 헤더 글씨 크기 키움 */}
+      <header style={{ backgroundColor: "#1e40af", color: "white", padding: "20px", display: "flex", alignItems: "center" }}>
+        <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px", display: "flex", alignItems: "center" }}>❮</button>
+        <span style={{ fontWeight: "bold", fontSize: "22px" }}>{cur.head}</span>
       </header>
-      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto", boxSizing: "border-box" }}>
-        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", boxSizing: "border-box" }}>
+
+      <main style={{ padding: "20px", maxWidth: "450px", margin: "0 auto", boxSizing: "border-box" }}>
+        {/* ⭐ 카드 내부 여백과 너비 고정 */}
+        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", boxSizing: "border-box", width: "100%" }}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <label style={labelStyle}>{cur.name}</label><input type="text" name="name" required style={inputStyle} />
             <label style={labelStyle}>{cur.phone}</label><input type="text" name="phone" required style={inputStyle} />
@@ -48,6 +64,7 @@ function VisitorFormContent() {
             <label style={labelStyle}>{cur.car}</label><input type="text" name="car_number" style={inputStyle} />
             <label style={labelStyle}>{cur.purpose}</label><input type="text" name="purpose" required style={inputStyle} />
             <label style={labelStyle}>{cur.time}</label><input type="datetime-local" name="visit_time" required style={inputStyle} />
+            
             <button type="submit" disabled={loading} style={{ width: "100%", height: "56px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "18px", fontWeight: "600", cursor: "pointer", marginTop: "10px" }}>
               {loading ? "..." : cur.btn}
             </button>
