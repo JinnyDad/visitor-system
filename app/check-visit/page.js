@@ -13,8 +13,8 @@ function VisitorCheckContent() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
-  const [visitData, setVisitData] = useState(null); // 조회된 데이터 저장
-  const [hasSearched, setHasSearched] = useState(false); // 조회 시도 여부
+  const [visitData, setVisitData] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const t = {
     ko: { 
@@ -34,7 +34,6 @@ function VisitorCheckContent() {
   };
   const cur = t[lang] || t.ko;
 
-  // 조회 로직
   async function handleSearch(e) {
     e.preventDefault();
     setLoading(true);
@@ -76,7 +75,6 @@ function VisitorCheckContent() {
         <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "40px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", boxSizing: "border-box", marginTop: "10px" }}>
           
           {!hasSearched ? (
-            /* 1. 입력 화면 */
             <>
               <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#1e293b", marginBottom: "10px", textAlign: "center" }}>{cur.cardTitle}</h2>
               <p style={{ color: "#64748b", marginBottom: "30px", fontSize: "15px", textAlign: "center" }}>{cur.cardDesc}</p>
@@ -89,7 +87,6 @@ function VisitorCheckContent() {
               </form>
             </>
           ) : (
-            /* 2. 결과 화면 */
             <div style={{ textAlign: "center" }}>
               {visitData ? (
                 <>
@@ -103,19 +100,30 @@ function VisitorCheckContent() {
                       {visitData.status || "대기 중"}
                     </div>
                   </div>
-                  <div style={{ textAlign: "left", fontSize: "15px", borderTop: "1px solid #f1f5f9", paddingTop: "20px", lineHeight: "2" }}>
+                  <div style={{ textAlign: "left", fontSize: "16px", borderTop: "1px solid #f1f5f9", paddingTop: "20px", lineHeight: "2" }}>
                     <div>성함: <strong>{visitData.name}</strong></div>
                     <div>대상자: <strong>{visitData.host_name || "-"}</strong></div>
                     <div>{cur.date}: <strong>{new Date(visitData.visit_time).toLocaleString()}</strong></div>
                   </div>
                 </>
               ) : (
-                <p style={{ color: "#64748b", padding: "20px 0" }}>{cur.noData}</p>
+                <p style={{ color: "#64748b", padding: "20px 0", fontSize: "16px" }}>{cur.noData}</p>
               )}
               
-              <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
-                <button onClick={() => setHasSearched(false)} style={{ flex: 1, height: "50px", border: "1px solid #e2e8f0", backgroundColor: "white", borderRadius: "10px", cursor: "pointer" }}>{cur.retry}</button>
-                <button onClick={() => router.push(`/?lang=${lang}`)} style={{ flex: 1, height: "50px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}>{cur.btnBack}</button>
+              <div style={{ display: "flex", gap: "12px", marginTop: "30px" }}>
+                {/* 글씨 크기 16px, 굵게 변경 */}
+                <button 
+                  onClick={() => setHasSearched(false)} 
+                  style={{ flex: 1, height: "54px", border: "1px solid #e2e8f0", backgroundColor: "white", borderRadius: "12px", cursor: "pointer", fontSize: "16px", fontWeight: "600", color: "#475569" }}
+                >
+                  {cur.retry}
+                </button>
+                <button 
+                  onClick={() => router.push(`/?lang=${lang}`)} 
+                  style={{ flex: 1, height: "54px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "16px", cursor: "pointer" }}
+                >
+                  {cur.btnBack}
+                </button>
               </div>
             </div>
           )}
