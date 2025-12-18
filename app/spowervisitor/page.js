@@ -29,7 +29,7 @@ function VisitorFormContent() {
     setLoading(false);
   }
 
-  // ⭐ 통합 입력창 스타일: datetime-local의 특수성까지 고려하여 수정
+  // ⭐ 수정한 입력창 스타일: 글자색 검정 및 수직 중앙 정렬 강화
   const inputStyle = { 
     width: "100%", 
     height: "52px", 
@@ -41,10 +41,13 @@ function VisitorFormContent() {
     fontSize: "16px", 
     boxSizing: "border-box", 
     outline: "none",
-    display: "block",
-    backgroundColor: "white", // 배경색 고정
-    appearance: "none", // 브라우저 기본 스타일 제거
-    WebkitAppearance: "none"
+    display: "flex",           // 내부 요소 정렬을 위해 flex 사용
+    alignItems: "center",      // 수직 중앙 정렬
+    backgroundColor: "white", 
+    color: "#000000",          // ⭐ 글자색 검은색 강제 지정
+    fontFamily: "inherit",
+    WebkitAppearance: "none",  // 아이폰/사파리 기본 스타일 제거
+    appearance: "none"
   };
   
   const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px", display: "block" };
@@ -74,13 +77,16 @@ function VisitorFormContent() {
             <label style={labelStyle}>{cur.purpose}</label>
             <input type="text" name="purpose" required style={inputStyle} />
             
-            {/* ⭐ 방문 일시 부분 스타일 재적용 */}
             <label style={labelStyle}>{cur.time}</label>
             <input 
               type="datetime-local" 
               name="visit_time" 
               required 
-              style={{...inputStyle, minHeight: "52px"}} // 높이를 확실하게 고정
+              style={{
+                ...inputStyle, 
+                lineHeight: "52px", // 텍스트 높이를 입력창 높이와 맞춰 중앙 정렬
+                color: "#000000"    // 파란색 방지
+              }} 
             />
             
             <button type="submit" disabled={loading} style={{ width: "100%", height: "56px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "18px", fontWeight: "600", cursor: "pointer", marginTop: "10px" }}>
