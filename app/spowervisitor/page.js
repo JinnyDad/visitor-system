@@ -32,18 +32,23 @@ export default function VisitorPage() {
     setLoading(false);
   }
 
-  // 박스 모델 설정: 패딩이 너비를 초과하지 않도록 보정
+  // 모든 입력창의 높이와 스타일을 통일하는 핵심 스타일
   const inputStyle = { 
     width: "100%", 
-    padding: "14px", 
+    height: "52px", // 높이를 명시적으로 고정
+    padding: "0 14px", // 위아래 패딩 대신 높이와 정렬로 조절
     borderRadius: "10px", 
     border: "1px solid #e2e8f0", 
     marginTop: "6px", 
     marginBottom: "18px", 
     fontSize: "16px",
-    boxSizing: "border-box", // 이 설정이 있어야 오른쪽이 안 잘립니다.
-    display: "block",
-    WebkitAppearance: "none" // 모바일 브라우저 기본 스타일 방지
+    boxSizing: "border-box", 
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "white",
+    WebkitAppearance: "none", // iOS 기본 스타일 제거
+    MozAppearance: "none",
+    appearance: "none"
   };
   
   const labelStyle = { 
@@ -55,41 +60,14 @@ export default function VisitorPage() {
   };
 
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      backgroundColor: "#f8f9fa", 
-      fontFamily: "'Pretendard', sans-serif", 
-      width: "100%", 
-      overflowX: "hidden" // 가로 스크롤 방지
-    }}>
-      <header style={{ 
-        backgroundColor: "#1e40af", 
-        color: "white", 
-        padding: "14px 20px", 
-        display: "flex", 
-        alignItems: "center", 
-        width: "100%", 
-        boxSizing: "border-box" 
-      }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif", width: "100%", overflowX: "hidden" }}>
+      <header style={{ backgroundColor: "#1e40af", color: "white", padding: "14px 20px", display: "flex", alignItems: "center", width: "100%", boxSizing: "border-box" }}>
         <button onClick={() => router.push("/")} style={{ background: "none", border: "none", color: "white", fontSize: "20px", cursor: "pointer", marginRight: "12px" }}>❮</button>
         <span style={{ fontWeight: "bold", fontSize: "18px" }}>방문신청 등록</span>
       </header>
 
-      <main style={{ 
-        padding: "20px", 
-        maxWidth: "500px", 
-        margin: "0 auto", 
-        width: "100%", 
-        boxSizing: "border-box" 
-      }}>
-        <div style={{ 
-          backgroundColor: "white", 
-          borderRadius: "24px", 
-          padding: "30px 20px", 
-          boxShadow: "0 10px 30px rgba(0,0,0,0.05)", 
-          width: "100%", 
-          boxSizing: "border-box" 
-        }}>
+      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", boxSizing: "border-box" }}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <label style={labelStyle}>성함</label>
             <input type="text" name="name" required style={inputStyle} placeholder="성함을 입력하세요" />
@@ -107,12 +85,17 @@ export default function VisitorPage() {
             <input type="text" name="purpose" required style={inputStyle} placeholder="방문 목적을 입력하세요" />
 
             <label style={labelStyle}>방문 일시</label>
-            {/* 날짜 입력창이 모바일에서 삐져나오지 않도록 width: 100% 적용 */}
-            <input type="datetime-local" name="visit_time" required style={inputStyle} />
+            {/* 스타일 통일을 위해 고정 높이 적용 */}
+            <input 
+              type="datetime-local" 
+              name="visit_time" 
+              required 
+              style={{ ...inputStyle, lineHeight: "52px" }} 
+            />
 
             <button type="submit" disabled={loading} style={{ 
               width: "100%", 
-              padding: "18px", 
+              height: "56px", // 버튼도 입력창보다 살짝 크게 고정
               backgroundColor: "#111827", 
               color: "white", 
               border: "none", 
