@@ -18,7 +18,7 @@ function VisitorCheckContent() {
       cardTitle: "신청 현황 확인",
       cardDesc: "등록하신 성함과 연락처를 입력해주세요.",
       nameP: "성함을 입력해주세요",
-      phoneP: "연락처를 입력해주세요",
+      phoneP: "연락처를 입력해주세요 (010-0000-0000)",
       btnSearch: "조회하기",
       noData: "조회된 신청 내역이 없습니다."
     },
@@ -34,23 +34,27 @@ function VisitorCheckContent() {
   };
   const cur = t[lang];
 
+  // ⭐ 실제 조회 로직 복구
   async function handleSearch(e) {
     e.preventDefault();
     setLoading(true);
-    // 조회 로직 (기존에 구현하신 로직이 있다면 여기에 연결)
-    // 예: router.push(`/spowervisitor/result?name=${name}&phone=${phone}&lang=${lang}`);
+    
+    // 이름과 연락처를 쿼리 스트링으로 들고 결과 페이지(/result)로 이동합니다.
+    // 기존에 만드신 결과 확인 페이지 경로가 /spowervisitor/result 가 맞는지 확인해주세요.
+    router.push(`/spowervisitor/result?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lang=${lang}`);
+    
     setLoading(false);
   }
 
   const inputStyle = { 
     width: "100%", height: "52px", padding: "0 16px", borderRadius: "12px", 
     border: "1px solid #e2e8f0", marginBottom: "12px", boxSizing: "border-box", 
-    fontSize: "16px", outline: "none", color: "#000000"
+    fontSize: "16px", outline: "none", color: "#000000", backgroundColor: "#ffffff"
   };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
-      {/* 1. 헤더: 관리자 로그인과 동일한 22px 높이 및 스타일 */}
+      {/* 1. 헤더: 관리자 로그인과 동일한 스타일 */}
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "20px", display: "flex", alignItems: "center" }}>
         <button 
           onClick={() => router.push(`/?lang=${lang}`)} 
@@ -61,7 +65,7 @@ function VisitorCheckContent() {
         <span style={{ fontWeight: "bold", fontSize: "22px" }}>{cur.head}</span>
       </header>
 
-      {/* 2. 메인: 카드를 상단으로 올려 관리자 화면과 위치 통일 */}
+      {/* 2. 메인: 카드를 상단으로 밀착 */}
       <main style={{ padding: "10px 20px", maxWidth: "450px", margin: "0 auto", boxSizing: "border-box" }}>
         <div style={{ 
           backgroundColor: "white", 
@@ -73,7 +77,6 @@ function VisitorCheckContent() {
           marginTop: "10px" 
         }}>
           
-          {/* 3. 관리자 화면처럼 제목과 설명 추가 */}
           <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#1e293b", marginBottom: "10px" }}>
             {cur.cardTitle}
           </h2>
