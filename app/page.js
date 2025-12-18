@@ -26,6 +26,7 @@ export default function HomePage() {
 
   const cur = t[lang];
 
+  // 경로 이동 함수 (언어 설정을 쿼리로 들고 갑니다)
   const navigateTo = (path) => {
     router.push(`${path}?lang=${lang}`);
   };
@@ -53,12 +54,22 @@ export default function HomePage() {
         <div style={{ backgroundColor: "white", borderRadius: "24px", boxShadow: "0 10px 40px rgba(0,0,0,0.08)", padding: "40px 24px", textAlign: "center", marginBottom: "20px" }}>
           <p style={{ color: "#64748b", fontSize: "16px", marginBottom: "8px" }}>{cur.startDesc}</p>
           <h2 style={{ fontSize: "20px", fontWeight: "bold", color: "#1e293b", marginBottom: "30px", lineHeight: "1.4" }}>{cur.startTitle}</h2>
+          
+          {/* 시작하기: 방문 등록 페이지로 이동 */}
           <button onClick={() => navigateTo("/spowervisitor")} style={{ width: "100%", padding: "18px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "14px", fontSize: "18px", fontWeight: "600", cursor: "pointer", marginBottom: "30px" }}>
             {cur.btnStart}
           </button>
+
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderTop: "1px solid #f1f5f9", paddingTop: "20px" }}>
-            <button onClick={() => navigateTo("/check-visit")} style={{ background: "none", border: "none", color: "#64748b", fontSize: "13px", borderRight: "1px solid #f1f5f9", cursor: "pointer" }}>{cur.btnCheck}</button>
-            <button onClick={() => navigateTo("/temp-login")} style={{ background: "none", border: "none", color: "#64748b", fontSize: "13px", cursor: "pointer" }}>{cur.btnAdmin}</button>
+            {/* ⭐ 방문신청조회: /check-visit 경로로 확실하게 연결 */}
+            <button onClick={() => navigateTo("/check-visit")} style={{ background: "none", border: "none", color: "#64748b", fontSize: "13px", borderRight: "1px solid #f1f5f9", cursor: "pointer" }}>
+              {cur.btnCheck}
+            </button>
+            
+            {/* 관리자 로그인: /temp-login 경로로 연결 */}
+            <button onClick={() => navigateTo("/temp-login")} style={{ background: "none", border: "none", color: "#64748b", fontSize: "13px", cursor: "pointer" }}>
+              {cur.btnAdmin}
+            </button>
           </div>
         </div>
 
