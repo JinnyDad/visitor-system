@@ -14,16 +14,16 @@ export default function VisitorsListPage() {
   const [search, setSearch] = useState("");
   const [filterToday, setFilterToday] = useState(false);
 
+  // 현재 인원 계산 (status가 '승인'인 데이터만 필터)
+  const currentVisitorCount = rows.filter(r => r.status === "승인").length;
+
   useEffect(() => {
-    // 세션 상태 감시: 로그아웃되면 로그인 페이지로 즉시 이동
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_OUT" || !session) {
         router.replace("/temp-login");
       }
     });
-
     checkSessionAndLoad();
-
     return () => subscription.unsubscribe();
   }, []);
 
@@ -31,12 +31,10 @@ export default function VisitorsListPage() {
     setLoading(true);
     try {
       const { data: { session }, error } = await supabase.auth.getSession();
-      
       if (error || !session) {
         router.replace("/temp-login");
         return;
       }
-      
       await loadRows();
     } catch (err) {
       setErrorMsg("인증 확인 중 오류 발생: " + String(err));
@@ -48,7 +46,7 @@ export default function VisitorsListPage() {
   async function loadRows() {
     const { data, error } = await supabase
       .from("visitors")
-      .select("id, name, company, phone, purpose, visit_time, status, car_number, host_name, created_at")
+      .select("id, name, company, phone, purpose, visit_time, status, car_number, host_name, created_at, checkout_time")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -59,16 +57,20 @@ export default function VisitorsListPage() {
   }
 
   async function updateStatus(id, newStatus) {
+    const updateData = { status: newStatus };
+    if (newStatus === "방문 완료") {
+      updateData.checkout_time = new Date().toISOString();
+    }
+
     const { error } = await supabase
       .from("visitors")
-      .update({ status: newStatus })
+      .update(updateData)
       .eq("id", id);
 
     if (error) {
       alert("변경 실패: " + error.message);
     } else {
-      alert(`${newStatus} 처리가 완료되었습니다.`);
-      loadRows();
+      loadRows(); // 즉시 새로고침하여 인원수 업데이트
     }
   }
 
@@ -108,17 +110,32 @@ export default function VisitorsListPage() {
     <div style={{ minHeight: "100vh", backgroundColor: "#f1f5f9", padding: "20px", fontFamily: "'Pretendard', sans-serif" }}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         
-        <header style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px", alignItems: "center" }}>
-          <h1 style={{ fontSize: "22px", fontWeight: "bold", color: "#1e40af" }}>방문객 관리 시스템</h1>
-          <button onClick={handleLogout} style={{ padding: "8px 16px", backgroundColor: "#64748b", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "600" }}>로그아웃</button>
+        <header style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", alignItems: "center" }}>
+          <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#1e40af" }}>S-Power 관리 시스템</h1>
+          <button onClick={handleLogout} style={{ padding: "6px 12px", backgroundColor: "#64748b", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "13px" }}>로그아웃</button>
         </header>
 
-        <div style={{ backgroundColor: "white", padding: "15px", borderRadius: "12px", marginBottom: "20px", display: "flex", gap: "10px", alignItems: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
-          <label style={{ fontSize: "14px", display: "flex", alignItems: "center", gap: "5px", cursor: "pointer", fontWeight: "600", color: "#475569" }}>
-            <input type="checkbox" checked={filterToday} onChange={(e) => setFilterToday(e.target.checked)} /> 오늘 방문만
+        {/* ⭐ 현재 방문 인원 실시간 대시보드 */}
+        <div style={{ 
+          backgroundColor: "#1e40af", color: "white", borderRadius: "16px", padding: "20px", marginBottom: "20px", 
+          display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 4px 15px rgba(30, 64, 175, 0.2)" 
+        }}>
+          <div>
+            <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: "4px" }}>현재 사내 방문객</div>
+            <div style={{ fontSize: "12px", opacity: 0.7 }}>실시간 입실 현황</div>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <span style={{ fontSize: "32px", fontWeight: "800" }}>{currentVisitorCount}</span>
+            <span style={{ fontSize: "18px", marginLeft: "4px" }}>명</span>
+          </div>
+        </div>
+
+        <div style={{ backgroundColor: "white", padding: "12px", borderRadius: "12px", marginBottom: "20px", display: "flex", gap: "10px", alignItems: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+          <label style={{ fontSize: "13px", display: "flex", alignItems: "center", gap: "5px", cursor: "pointer", fontWeight: "600", color: "#475569", minWidth: "90px" }}>
+            <input type="checkbox" checked={filterToday} onChange={(e) => setFilterToday(e.target.checked)} /> 오늘 방문
           </label>
           <input 
-            style={{ flex: 1, padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0", outline: "none", fontSize: "15px" }}
+            style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0", outline: "none", fontSize: "14px" }}
             placeholder="이름/회사/차량/대상자 검색..." 
             value={search} 
             onChange={(e) => setSearch(e.target.value)} 
@@ -132,12 +149,13 @@ export default function VisitorsListPage() {
         ) : (
           rowsToShow.map((r) => (
             <div key={r.id} style={{ backgroundColor: "white", borderRadius: "16px", padding: "20px", marginBottom: "15px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
+              {/* 카드 내용은 기존과 동일 */}
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
                 <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: "500" }}>{r.visit_time ? new Date(r.visit_time).toLocaleString() : "-"} 예정</span>
                 <span style={{ 
                   padding: "4px 10px", borderRadius: "6px", fontSize: "12px", fontWeight: "bold",
-                  backgroundColor: r.status === "승인" ? "#dcfce7" : r.status === "반려" ? "#fee2e2" : "#f1f5f9",
-                  color: r.status === "승인" ? "#166534" : r.status === "반려" ? "#991b1b" : "#475569"
+                  backgroundColor: r.status === "승인" ? "#dcfce7" : r.status === "반려" ? "#fee2e2" : r.status === "방문 완료" ? "#f1f5f9" : "#fff7ed",
+                  color: r.status === "승인" ? "#166534" : r.status === "반려" ? "#991b1b" : r.status === "방문 완료" ? "#64748b" : "#c2410c"
                 }}>{r.status || "대기"}</span>
               </div>
 
@@ -146,15 +164,26 @@ export default function VisitorsListPage() {
                 <div>연락처: <strong>{r.phone}</strong></div>
                 <div>회사: <strong>{r.company || "-"}</strong></div>
                 <div>차량: <strong style={{ color: "#2563eb" }}>{r.car_number || "없음"}</strong></div>
-                <div style={{ gridColumn: "span 2", padding: "10px 0", borderTop: "1px dashed #f1f5f9", marginTop: "5px" }}>
-                  방문 대상자: <strong style={{ color: "#1e40af", fontSize: "16px" }}>{r.host_name || "-"}</strong>
+                <div style={{ gridColumn: "span 2", padding: "8px 0", borderTop: "1px dashed #f1f5f9", marginTop: "5px" }}>
+                  방문 대상자: <strong style={{ color: "#1e40af" }}>{r.host_name || "-"}</strong>
                 </div>
-                <div style={{ gridColumn: "span 2" }}>목적: <strong>{r.purpose}</strong></div>
               </div>
 
               <div style={{ display: "flex", gap: "10px", borderTop: "1px solid #f1f5f9", paddingTop: "15px" }}>
-                <button onClick={() => updateStatus(r.id, "승인")} style={{ flex: 1, padding: "14px", backgroundColor: "#166534", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}>승인</button>
-                <button onClick={() => updateStatus(r.id, "반려")} style={{ flex: 1, padding: "14px", backgroundColor: "#991b1b", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}>반려</button>
+                {(!r.status || r.status === "대기") && (
+                  <>
+                    <button onClick={() => updateStatus(r.id, "승인")} style={{ flex: 1, padding: "12px", backgroundColor: "#166534", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}>승인</button>
+                    <button onClick={() => updateStatus(r.id, "반려")} style={{ flex: 1, padding: "12px", backgroundColor: "#991b1b", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}>반려</button>
+                  </>
+                )}
+                
+                {r.status === "승인" && (
+                  <button onClick={() => updateStatus(r.id, "방문 완료")} style={{ flex: 1, padding: "12px", backgroundColor: "#10b981", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}>방문 완료 (출문)</button>
+                )}
+                
+                {(r.status === "방문 완료" || r.status === "반려") && (
+                  <div style={{ flex: 1, textAlign: "center", color: "#94a3b8", fontSize: "14px", padding: "10px" }}>처리가 완료된 방문입니다.</div>
+                )}
               </div>
             </div>
           ))
