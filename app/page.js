@@ -7,7 +7,7 @@ export default function HomePage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif", display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* 상단 네이비 헤더 - 전체 너비 확장 */}
+      {/* 상단 네이비 헤더 */}
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", boxSizing: "border-box" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span style={{ fontWeight: "bold", fontSize: "18px" }}>에스파워</span>
@@ -17,12 +17,31 @@ export default function HomePage() {
       </header>
 
       <main style={{ flex: 1, padding: "0 20px", maxWidth: "450px", width: "100%", boxSizing: "border-box" }}>
-        {/* S-Power 배경 글자: 겹치지 않게 패딩 조정 */}
-        <div style={{ textAlign: "center", fontSize: "60px", fontWeight: "900", color: "#eceef1", letterSpacing: "-2px", padding: "60px 0 30px 0", userSelect: "none" }}>
-          S-Power
+        {/* S-Power 배경 글자 영역 */}
+        <div style={{ textAlign: "center", padding: "60px 0 30px 0", userSelect: "none" }}>
+          <div style={{ 
+            fontSize: "60px", 
+            fontWeight: "900", 
+            color: "#e2e8f0", 
+            letterSpacing: "-2px",
+            lineHeight: "1",
+            textShadow: "1px 1px 0px rgba(255,255,255,0.8)"
+          }}>
+            S-Power
+          </div>
+          {/* 추가된 보조 문구: 안산복합화력발전소 */}
+          <div style={{ 
+            fontSize: "16px", 
+            fontWeight: "600", 
+            color: "#94a3b8", 
+            marginTop: "8px",
+            letterSpacing: "2px"
+          }}>
+            안산복합화력발전소
+          </div>
         </div>
 
-        {/* 시작하기 카드: 중앙 정렬 강화 */}
+        {/* 시작하기 카드 */}
         <div style={{ backgroundColor: "white", borderRadius: "24px", boxShadow: "0 10px 40px rgba(0,0,0,0.06)", padding: "40px 24px", textAlign: "center", marginBottom: "20px" }}>
           <p style={{ color: "#64748b", fontSize: "16px", marginBottom: "8px" }}>방문신청을 하시려면</p>
           <h2 style={{ fontSize: "22px", fontWeight: "bold", color: "#1e293b", marginBottom: "30px", lineHeight: "1.4" }}>
