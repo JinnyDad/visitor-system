@@ -14,7 +14,6 @@ export default function VisitorsListPage() {
   const [search, setSearch] = useState("");
   const [filterToday, setFilterToday] = useState(false);
 
-  // 1. 보안 체크 및 데이터 로드 (기존 로직 유지)
   useEffect(() => {
     checkSessionAndLoad();
   }, []);
@@ -35,11 +34,11 @@ export default function VisitorsListPage() {
     }
   }
 
-  // 2. 데이터 로드 (차량번호 car_number 추가)
+  // 1. 데이터 로드 (host_name 추가)
   async function loadRows() {
     const { data, error } = await supabase
       .from("visitors")
-      .select("id, name, company, phone, purpose, visit_time, status, car_number, created_at")
+      .select("id, name, company, phone, purpose, visit_time, status, car_number, host_name, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -49,7 +48,6 @@ export default function VisitorsListPage() {
     }
   }
 
-  // 3. 승인/반려 기능 (새로 추가된 기능)
   async function updateStatus(id, newStatus) {
     const { error } = await supabase
       .from("visitors")
@@ -60,7 +58,7 @@ export default function VisitorsListPage() {
       alert("변경 실패: " + error.message);
     } else {
       alert(`${newStatus} 처리가 완료되었습니다.`);
-      loadRows(); // 새로고침
+      loadRows();
     }
   }
 
@@ -69,7 +67,7 @@ export default function VisitorsListPage() {
     router.replace("/temp-login");
   }
 
-  // 4. 필터 및 검색 로직 (기존 로직 유지)
+  // 2. 검색 로직 (host_name 검색 추가)
   const rowsToShow = rows
     .filter((r) => {
       if (!filterToday) return true;
@@ -90,7 +88,8 @@ export default function VisitorsListPage() {
         (r.company || "").toLowerCase().includes(s) ||
         (r.phone || "").toLowerCase().includes(s) ||
         (r.purpose || "").toLowerCase().includes(s) ||
-        (r.car_number || "").toLowerCase().includes(s)
+        (r.car_number || "").toLowerCase().includes(s) ||
+        (r.host_name || "").toLowerCase().includes(s) // 방문 대상자 검색 허용
       );
     });
 
@@ -98,20 +97,18 @@ export default function VisitorsListPage() {
     <div style={{ minHeight: "100vh", backgroundColor: "#f1f5f9", padding: "20px", fontFamily: "'Pretendard', sans-serif" }}>
       <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         
-        {/* 헤더 영역 */}
         <header style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px", alignItems: "center" }}>
           <h1 style={{ fontSize: "22px", fontWeight: "bold" }}>방문객 관리 시스템</h1>
           <button onClick={handleLogout} style={{ padding: "8px 16px", backgroundColor: "#64748b", color: "white", border: "none", borderRadius: "8px", cursor: "pointer" }}>로그아웃</button>
         </header>
 
-        {/* 필터 및 검색바 */}
         <div style={{ backgroundColor: "white", padding: "15px", borderRadius: "12px", marginBottom: "20px", display: "flex", gap: "10px", alignItems: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
           <label style={{ fontSize: "14px", display: "flex", alignItems: "center", gap: "5px", cursor: "pointer" }}>
             <input type="checkbox" checked={filterToday} onChange={(e) => setFilterToday(e.target.checked)} /> 오늘 방문만
           </label>
           <input 
             style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0" }}
-            placeholder="이름/회사/차량번호 검색..." 
+            placeholder="이름/회사/차량/대상자 검색..." 
             value={search} 
             onChange={(e) => setSearch(e.target.value)} 
           />
@@ -129,15 +126,21 @@ export default function VisitorsListPage() {
                 }}>{r.status || "대기"}</span>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", fontSize: "15px", marginBottom: "15px" }}>
+              {/* 3. 방문 정보 그리드 레이아웃 (방문 대상자 포함) */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "15px", marginBottom: "15px" }}>
                 <div>성함: <strong>{r.name}</strong></div>
                 <div>연락처: <strong>{r.phone}</strong></div>
                 <div>회사: <strong>{r.company || "-"}</strong></div>
                 <div>차량: <strong style={{ color: "#2563eb" }}>{r.car_number || "없음"}</strong></div>
+                
+                {/* 방문 대상자 강조 표시 */}
+                <div style={{ gridColumn: "span 2", padding: "8px 0", borderTop: "1px dashed #f1f5f9" }}>
+                  방문 대상자: <strong style={{ color: "#1e40af", fontSize: "16px" }}>{r.host_name || "-"}</strong>
+                </div>
+                
                 <div style={{ gridColumn: "span 2" }}>목적: <strong>{r.purpose}</strong></div>
               </div>
 
-              {/* 승인/반려 버튼 */}
               <div style={{ display: "flex", gap: "10px", borderTop: "1px solid #f1f5f9", paddingTop: "15px" }}>
                 <button onClick={() => updateStatus(r.id, "승인")} style={{ flex: 1, padding: "12px", backgroundColor: "#166534", color: "white", border: "none", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>승인</button>
                 <button onClick={() => updateStatus(r.id, "반려")} style={{ flex: 1, padding: "12px", backgroundColor: "#991b1b", color: "white", border: "none", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>반려</button>
