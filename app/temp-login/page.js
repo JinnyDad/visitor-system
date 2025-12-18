@@ -32,14 +32,17 @@ export default function AdminLoginPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
+      {/* 기존 디자인 유지 */}
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "20px", display: "flex", alignItems: "center" }}>
         <button onClick={() => router.push("/")} style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px" }}>❮</button>
         <span style={{ fontWeight: "bold", fontSize: "22px" }}>관리자 로그인</span>
       </header>
+
       <main style={{ padding: "10px 20px", maxWidth: "450px", margin: "0 auto", boxSizing: "border-box" }}>
         <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "40px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", textAlign: "center", boxSizing: "border-box", marginTop: "10px" }}>
           <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#1e293b", marginBottom: "10px" }}>S-Power Admin</h2>
           <p style={{ color: "#64748b", marginBottom: "30px", fontSize: "15px" }}>관리자 계정으로 로그인하세요.</p>
+          
           <form onSubmit={handleLogin}>
             <input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} required style={inputStyle} />
             <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} required style={inputStyle} />
@@ -47,6 +50,17 @@ export default function AdminLoginPage() {
               {loading ? "로그인 중..." : "로그인"}
             </button>
           </form>
+
+          {/* ⭐ 새로 추가된 회원가입 링크 영역 */}
+          <div style={{ marginTop: "30px", paddingTop: "20px", borderTop: "1px solid #f1f5f9" }}>
+            <p style={{ fontSize: "14px", color: "#94a3b8", marginBottom: "10px" }}>계정이 없으신가요?</p>
+            <button 
+              onClick={() => router.push("/signup")} 
+              style={{ background: "none", border: "1px solid #1e40af", color: "#1e40af", padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "bold", cursor: "pointer", width: "100%" }}
+            >
+              관리자 가입 신청하기
+            </button>
+          </div>
         </div>
       </main>
     </div>
