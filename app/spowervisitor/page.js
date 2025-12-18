@@ -17,9 +17,11 @@ function VisitorFormContent() {
       phone: "연락처", phoneP: "010-0000-0000",
       company: "소속 (회사명)", companyP: "회사명을 입력해주세요",
       car: "차량번호 (선택)", carP: "12가 3456 (없으면 빈칸)",
+      host: "방문 대상자", hostP: "방문하실 담당자 성함을 적어주세요", // 추가됨
       purpose: "방문 목적", purposeP: "방문 목적을 입력해주세요",
       time: "방문 일시", 
-      btn: "방문 신청하기", 
+      btnSubmit: "방문 신청하기",
+      btnCancel: "취소하기",
       alert: "방문 신청이 완료되었습니다." 
     },
     en: { 
@@ -28,9 +30,11 @@ function VisitorFormContent() {
       phone: "Phone", phoneP: "010-0000-0000",
       company: "Company", companyP: "Enter your company name",
       car: "Car Number (Opt)", carP: "12A 3456 (Optional)",
+      host: "Host Person", hostP: "Name of the person you are visiting", // 추가됨
       purpose: "Purpose", purposeP: "Enter purpose of visit",
       time: "Visit Time", 
-      btn: "Register Now", 
+      btnSubmit: "Register Now",
+      btnCancel: "Cancel",
       alert: "Registration Complete." 
     }
   };
@@ -41,30 +45,25 @@ function VisitorFormContent() {
     setLoading(true);
     const formData = new FormData(e.target);
     const { error } = await getSupabaseClient().from("visitors").insert({
-      name: formData.get("name"), phone: formData.get("phone"), company: formData.get("company"),
-      car_number: formData.get("car_number"), purpose: formData.get("purpose"), visit_time: formData.get("visit_time"), status: "대기"
+      name: formData.get("name"), 
+      phone: formData.get("phone"), 
+      company: formData.get("company"),
+      car_number: formData.get("car_number"), 
+      host_name: formData.get("host_name"), // DB에 host_name 컬럼이 있다고 가정
+      purpose: formData.get("purpose"), 
+      visit_time: formData.get("visit_time"), 
+      status: "대기"
     });
     if (error) alert(error.message);
     else { alert(cur.alert); router.push(`/?lang=${lang}`); }
     setLoading(false);
   }
 
-  // ⭐ 공통 입력창 스타일 (너비 이탈 방지 핵심)
   const inputStyle = { 
-    width: "100%", 
-    height: "52px", 
-    padding: "0 14px", 
-    borderRadius: "10px", 
-    border: "1px solid #e2e8f0", 
-    marginTop: "6px", 
-    marginBottom: "18px", 
-    fontSize: "16px", 
-    boxSizing: "border-box", // 패딩을 너비 안에 가두는 핵심 속성
-    outline: "none",
-    display: "block",
-    backgroundColor: "white", 
-    color: "#000000",
-    textAlign: "left"
+    width: "100%", height: "52px", padding: "0 14px", borderRadius: "10px", 
+    border: "1px solid #e2e8f0", marginTop: "6px", marginBottom: "18px", 
+    fontSize: "16px", boxSizing: "border-box", outline: "none", 
+    display: "block", backgroundColor: "white", color: "#000000"
   };
   
   const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px", display: "block" };
@@ -72,7 +71,7 @@ function VisitorFormContent() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "20px", display: "flex", alignItems: "center" }}>
-        <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px", display: "flex", alignItems: "center" }}>❮</button>
+        <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px" }}>❮</button>
         <span style={{ fontWeight: "bold", fontSize: "22px" }}>{cur.head}</span>
       </header>
 
@@ -90,47 +89,42 @@ function VisitorFormContent() {
             
             <label style={labelStyle}>{cur.car}</label>
             <input type="text" name="car_number" placeholder={cur.carP} style={inputStyle} />
+
+            {/* ⭐ 새롭게 추가된 방문 대상자 칸 */}
+            <label style={labelStyle}>{cur.host}</label>
+            <input type="text" name="host_name" required placeholder={cur.hostP} style={inputStyle} />
             
             <label style={labelStyle}>{cur.purpose}</label>
             <input type="text" name="purpose" required placeholder={cur.purposeP} style={inputStyle} />
             
             <label style={labelStyle}>{cur.time}</label>
-            {/* ⭐ 날짜 입력창 특수 봉인 처리 */}
-            <div style={{ position: "relative", width: "100%" }}>
-              <input 
-                type="datetime-local" 
-                name="visit_time" 
-                required 
-                style={{
-                  ...inputStyle,
-                  color: "#000000",
-                  lineHeight: "1.2", // 텍스트 중앙 위치 유도
-                  paddingTop: "14px", // 상단 여백으로 중앙 맞춤
-                  paddingBottom: "14px"
-                }} 
-              />
-            </div>
+            <input type="datetime-local" name="visit_time" required style={{...inputStyle, color: "#000000"}} />
             
-            <button type="submit" disabled={loading} style={{ width: "100%", height: "56px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "18px", fontWeight: "600", cursor: "pointer", marginTop: "10px" }}>
-              {loading ? "..." : cur.btn}
-            </button>
+            {/* ⭐ 하단 버튼 레이아웃 수정 */}
+            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+              <button 
+                type="button" 
+                onClick={() => router.push(`/?lang=${lang}`)}
+                style={{ flex: 1, height: "56px", backgroundColor: "#94a3b8", color: "white", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer" }}
+              >
+                {cur.btnCancel}
+              </button>
+              <button 
+                type="submit" 
+                disabled={loading} 
+                style={{ flex: 2, height: "56px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "600", cursor: "pointer" }}
+              >
+                {loading ? "..." : cur.btnSubmit}
+              </button>
+            </div>
           </form>
         </div>
       </main>
 
-      {/* ⭐ 브라우저가 강제로 넣는 아이콘들을 숨기는 스타일 태그 추가 */}
       <style>{`
         input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-          background: transparent;
-          bottom: 0;
-          color: transparent;
-          cursor: pointer;
-          height: auto;
-          left: 0;
-          position: absolute;
-          right: 0;
-          top: 0;
-          width: auto;
+          background: transparent; bottom: 0; color: transparent; cursor: pointer;
+          height: auto; left: 0; position: absolute; right: 0; top: 0; width: auto;
         }
       `}</style>
     </div>
