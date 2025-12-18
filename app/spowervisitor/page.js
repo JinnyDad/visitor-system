@@ -21,38 +21,34 @@ function VisitorFormContent() {
     setLoading(true);
     const formData = new FormData(e.target);
     const { error } = await getSupabaseClient().from("visitors").insert({
-      name: formData.get("name"),
-      phone: formData.get("phone"),
-      company: formData.get("company"),
-      car_number: formData.get("car_number"),
-      purpose: formData.get("purpose"),
-      visit_time: formData.get("visit_time"),
-      status: "대기"
+      name: formData.get("name"), phone: formData.get("phone"), company: formData.get("company"),
+      car_number: formData.get("car_number"), purpose: formData.get("purpose"), visit_time: formData.get("visit_time"), status: "대기"
     });
     if (error) alert(error.message);
     else { alert(cur.alert); router.push(`/?lang=${lang}`); }
     setLoading(false);
   }
 
-  const inputStyle = { width: "100%", height: "52px", padding: "0 14px", borderRadius: "10px", border: "1px solid #e2e8f0", marginTop: "6px", marginBottom: "18px", fontSize: "16px", boxSizing: "border-box", display: "block" };
+  // ⭐ 수정된 스타일: boxSizing과 width 조절로 카드 이탈 방지
+  const inputStyle = { width: "100%", height: "52px", padding: "0 14px", borderRadius: "10px", border: "1px solid #e2e8f0", marginTop: "6px", marginBottom: "18px", fontSize: "16px", boxSizing: "border-box" };
   const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px" };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
-      <header style={{ backgroundColor: "#1e40af", color: "white", padding: "14px 20px", display: "flex", alignItems: "center" }}>
-        <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "20px", cursor: "pointer", marginRight: "12px" }}>❮</button>
-        <span style={{ fontWeight: "bold", fontSize: "18px" }}>{cur.head}</span>
+      <header style={{ backgroundColor: "#1e40af", color: "white", padding: "18px 20px", display: "flex", alignItems: "center" }}>
+        <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "22px", cursor: "pointer", marginRight: "15px" }}>❮</button>
+        <span style={{ fontWeight: "bold", fontSize: "20px" }}>{cur.head}</span>
       </header>
-      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
-        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
-          <form onSubmit={handleSubmit}>
+      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto", boxSizing: "border-box" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", boxSizing: "border-box" }}>
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <label style={labelStyle}>{cur.name}</label><input type="text" name="name" required style={inputStyle} />
             <label style={labelStyle}>{cur.phone}</label><input type="text" name="phone" required style={inputStyle} />
             <label style={labelStyle}>{cur.company}</label><input type="text" name="company" style={inputStyle} />
             <label style={labelStyle}>{cur.car}</label><input type="text" name="car_number" style={inputStyle} />
             <label style={labelStyle}>{cur.purpose}</label><input type="text" name="purpose" required style={inputStyle} />
             <label style={labelStyle}>{cur.time}</label><input type="datetime-local" name="visit_time" required style={inputStyle} />
-            <button type="submit" disabled={loading} style={{ width: "100%", height: "56px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "17px", fontWeight: "600", cursor: "pointer" }}>
+            <button type="submit" disabled={loading} style={{ width: "100%", height: "56px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "18px", fontWeight: "600", cursor: "pointer", marginTop: "10px" }}>
               {loading ? "..." : cur.btn}
             </button>
           </form>
