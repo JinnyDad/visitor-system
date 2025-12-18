@@ -10,7 +10,7 @@ export default function HomePage() {
       {/* 상단 네이비 헤더 */}
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", boxSizing: "border-box" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontWeight: "bold", fontSize: "18px" }}>에스파워</span>
+          <span style={{ fontWeight: "bold", fontSize: "18px" }}>(주)에스파워</span>
           <span style={{ fontSize: "16px", opacity: 0.9 }}>방문예약</span>
         </div>
         <div style={{ border: "1px solid rgba(255,255,255,0.5)", borderRadius: "4px", padding: "4px 8px", fontSize: "13px" }}>🌐 KOR ▾</div>
