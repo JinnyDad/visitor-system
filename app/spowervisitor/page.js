@@ -18,7 +18,7 @@ export default function VisitorPage() {
       name: formData.get("name"),
       phone: formData.get("phone"),
       company: formData.get("company"),
-      car_number: formData.get("car_number"), // 차량번호 추가
+      car_number: formData.get("car_number"),
       purpose: formData.get("purpose"),
       visit_time: formData.get("visit_time")
     });
@@ -32,19 +32,30 @@ export default function VisitorPage() {
     setLoading(false);
   }
 
-  const inputStyle = { width: "100%", padding: "14px", borderRadius: "10px", border: "1px solid #e2e8f0", marginTop: "6px", marginBottom: "18px", fontSize: "16px", boxSizing: "border-box" };
-  const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px" };
+  // 핵심 수정: boxSizing 추가로 테두리가 화면 밖으로 나가지 않게 함
+  const inputStyle = { 
+    width: "100%", 
+    padding: "14px", 
+    borderRadius: "10px", 
+    border: "1px solid #e2e8f0", 
+    marginTop: "6px", 
+    marginBottom: "18px", 
+    fontSize: "16px",
+    boxSizing: "border-box", // 여백이 너비에 포함되도록 설정
+    display: "block"
+  };
+  const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px", display: "block" };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif", width: "100%", overflowX: "hidden" }}>
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "14px 20px", display: "flex", alignItems: "center", width: "100%", boxSizing: "border-box" }}>
         <button onClick={() => router.push("/")} style={{ background: "none", border: "none", color: "white", fontSize: "20px", cursor: "pointer", marginRight: "12px" }}>❮</button>
         <span style={{ fontWeight: "bold", fontSize: "18px" }}>방문신청 등록</span>
       </header>
 
-      <main style={{ padding: "20px", maxWidth: "450px", margin: "0 auto" }}>
-        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
-          <form onSubmit={handleSubmit}>
+      <main style={{ padding: "20px", maxWidth: "450px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", width: "100%", boxSizing: "border-box" }}>
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <label style={labelStyle}>성함</label>
             <input type="text" name="name" required style={inputStyle} placeholder="성함을 입력하세요" />
 
@@ -63,7 +74,7 @@ export default function VisitorPage() {
             <label style={labelStyle}>방문 일시</label>
             <input type="datetime-local" name="visit_time" required style={inputStyle} />
 
-            <button type="submit" disabled={loading} style={{ width: "100%", padding: "18px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "17px", fontWeight: "600", marginTop: "10px", cursor: "pointer" }}>
+            <button type="submit" disabled={loading} style={{ width: "100%", padding: "18px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "17px", fontWeight: "600", marginTop: "10px", cursor: "pointer", boxSizing: "border-box" }}>
               {loading ? "등록 중..." : "방문 신청하기"}
             </button>
           </form>
