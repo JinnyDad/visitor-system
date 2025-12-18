@@ -29,7 +29,7 @@ function VisitorFormContent() {
     setLoading(false);
   }
 
-  // ⭐ 입력창 스타일: boxSizing 보강으로 이탈 방지
+  // ⭐ 통합 입력창 스타일: datetime-local의 특수성까지 고려하여 수정
   const inputStyle = { 
     width: "100%", 
     height: "52px", 
@@ -39,31 +39,49 @@ function VisitorFormContent() {
     marginTop: "6px", 
     marginBottom: "18px", 
     fontSize: "16px", 
-    boxSizing: "border-box", // 패딩이 너비에 포함되도록 설정
+    boxSizing: "border-box", 
     outline: "none",
-    display: "block"
+    display: "block",
+    backgroundColor: "white", // 배경색 고정
+    appearance: "none", // 브라우저 기본 스타일 제거
+    WebkitAppearance: "none"
   };
   
   const labelStyle = { fontSize: "14px", fontWeight: "600", color: "#475569", marginLeft: "4px", display: "block" };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8f9fa", fontFamily: "'Pretendard', sans-serif" }}>
-      {/* ⭐ 헤더 글씨 크기 키움 */}
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "20px", display: "flex", alignItems: "center" }}>
         <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px", display: "flex", alignItems: "center" }}>❮</button>
         <span style={{ fontWeight: "bold", fontSize: "22px" }}>{cur.head}</span>
       </header>
 
       <main style={{ padding: "20px", maxWidth: "450px", margin: "0 auto", boxSizing: "border-box" }}>
-        {/* ⭐ 카드 내부 여백과 너비 고정 */}
         <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "30px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", boxSizing: "border-box", width: "100%" }}>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-            <label style={labelStyle}>{cur.name}</label><input type="text" name="name" required style={inputStyle} />
-            <label style={labelStyle}>{cur.phone}</label><input type="text" name="phone" required style={inputStyle} />
-            <label style={labelStyle}>{cur.company}</label><input type="text" name="company" style={inputStyle} />
-            <label style={labelStyle}>{cur.car}</label><input type="text" name="car_number" style={inputStyle} />
-            <label style={labelStyle}>{cur.purpose}</label><input type="text" name="purpose" required style={inputStyle} />
-            <label style={labelStyle}>{cur.time}</label><input type="datetime-local" name="visit_time" required style={inputStyle} />
+            <label style={labelStyle}>{cur.name}</label>
+            <input type="text" name="name" required style={inputStyle} />
+            
+            <label style={labelStyle}>{cur.phone}</label>
+            <input type="text" name="phone" required style={inputStyle} />
+            
+            <label style={labelStyle}>{cur.company}</label>
+            <input type="text" name="company" style={inputStyle} />
+            
+            <label style={labelStyle}>{cur.car}</label>
+            <input type="text" name="car_number" style={inputStyle} />
+            
+            <label style={labelStyle}>{cur.purpose}</label>
+            <input type="text" name="purpose" required style={inputStyle} />
+            
+            {/* ⭐ 방문 일시 부분 스타일 재적용 */}
+            <label style={labelStyle}>{cur.time}</label>
+            <input 
+              type="datetime-local" 
+              name="visit_time" 
+              required 
+              style={{...inputStyle, minHeight: "52px"}} // 높이를 확실하게 고정
+            />
             
             <button type="submit" disabled={loading} style={{ width: "100%", height: "56px", backgroundColor: "#111827", color: "white", border: "none", borderRadius: "12px", fontSize: "18px", fontWeight: "600", cursor: "pointer", marginTop: "10px" }}>
               {loading ? "..." : cur.btn}
