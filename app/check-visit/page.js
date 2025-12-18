@@ -31,13 +31,17 @@ function VisitorCheckContent() {
   };
   const cur = t[lang];
 
+  // ⭐ 조회 버튼 클릭 시 실행되는 함수
   async function handleSearch(e) {
     e.preventDefault();
+    if (!name || !phone) return;
+    
     setLoading(true);
-    // ⭐ 결과 페이지 경로가 /spowervisitor/result 인지 확인하세요. 
-    // 만약 결과 페이지도 경로가 다르다면 이 부분을 수정해야 합니다.
-    router.push(`/spowervisitor/result?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lang=${lang}`);
-    setLoading(false);
+    // 결과 페이지로 파라미터를 담아 이동합니다.
+    // 결과 페이지 경로가 /spowervisitor/result 인지 반드시 확인하세요.
+    const url = `/spowervisitor/result?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&lang=${lang}`;
+    console.log("Moving to:", url); // 디버깅용
+    router.push(url);
   }
 
   const inputStyle = { 
@@ -52,15 +56,35 @@ function VisitorCheckContent() {
         <button onClick={() => router.push(`/?lang=${lang}`)} style={{ background: "none", border: "none", color: "white", fontSize: "24px", cursor: "pointer", marginRight: "15px" }}>❮</button>
         <span style={{ fontWeight: "bold", fontSize: "22px" }}>{cur.head}</span>
       </header>
+
       <main style={{ padding: "10px 20px", maxWidth: "450px", margin: "0 auto", boxSizing: "border-box" }}>
         <div style={{ backgroundColor: "white", borderRadius: "24px", padding: "40px 20px", boxShadow: "0 10px 30px rgba(0,0,0,0.05)", textAlign: "center", boxSizing: "border-box", marginTop: "10px" }}>
           <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#1e293b", marginBottom: "10px" }}>{cur.cardTitle}</h2>
           <p style={{ color: "#64748b", marginBottom: "30px", fontSize: "15px" }}>{cur.cardDesc}</p>
+          
           <form onSubmit={handleSearch}>
-            <input type="text" placeholder={cur.nameP} value={name} onChange={(e) => setName(e.target.value)} required style={inputStyle} />
-            <input type="text" placeholder={cur.phoneP} value={phone} onChange={(e) => setPhone(e.target.value)} required style={inputStyle} />
-            <button type="submit" disabled={loading} style={{ width: "100%", height: "54px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "18px", cursor: "pointer", marginTop: "10px" }}>
-              {loading ? "..." : cur.btnSearch}
+            <input 
+              type="text" 
+              placeholder={cur.nameP} 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+              required 
+              style={inputStyle} 
+            />
+            <input 
+              type="text" 
+              placeholder={cur.phoneP} 
+              value={phone} 
+              onChange={(e) => setPhone(e.target.value)} 
+              required 
+              style={inputStyle} 
+            />
+            <button 
+              type="submit" 
+              disabled={loading} 
+              style={{ width: "100%", height: "54px", backgroundColor: "#1e40af", color: "white", border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "18px", cursor: "pointer", marginTop: "10px" }}
+            >
+              {loading ? "조회 중..." : cur.btnSearch}
             </button>
           </form>
         </div>
