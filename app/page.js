@@ -10,41 +10,46 @@ export default function HomePage() {
       {/* 상단 네이비 헤더 */}
       <header style={{ backgroundColor: "#1e40af", color: "white", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", boxSizing: "border-box" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontWeight: "bold", fontSize: "18px" }}>(주)에스파워</span>
+          <span style={{ fontWeight: "bold", fontSize: "18px" }}>에스파워</span>
           <span style={{ fontSize: "16px", opacity: 0.9 }}>방문예약</span>
         </div>
         <div style={{ border: "1px solid rgba(255,255,255,0.5)", borderRadius: "4px", padding: "4px 8px", fontSize: "13px" }}>🌐 KOR ▾</div>
       </header>
 
       <main style={{ flex: 1, padding: "0 20px", maxWidth: "450px", width: "100%", boxSizing: "border-box" }}>
-        {/* S-Power 배경 글자 영역: 시인성 강화 버전 */}
+        {/* S-Power 배경 글자 영역: 타이포그래피 정렬 강화 */}
         <div style={{ textAlign: "center", padding: "60px 0 30px 0", userSelect: "none" }}>
           <div style={{ 
             fontSize: "64px", 
             fontWeight: "900", 
-            color: "#cbd5e1", // 가독성을 위해 더 진한 색상으로 변경
-            letterSpacing: "-3px",
+            color: "#cbd5e1", 
+            letterSpacing: "-3px", // 영문 자간은 좁게
             lineHeight: "1",
-            // 글자를 돋보이게 하는 입체감 효과
             textShadow: "2px 2px 4px rgba(0,0,0,0.05), -1px -1px 0px rgba(255,255,255,0.8)",
-            opacity: "0.8"
+            opacity: "0.8",
+            display: "inline-block", // 너비 계산을 위해 추가
+            width: "100%"
           }}>
             S-Power
           </div>
-          {/* 안산복합화력발전소 문구도 조금 더 또렷하게 */}
+          
+          {/* 안산복합화력발전소: S-Power 너비에 맞춰 크기와 자간 조정 */}
           <div style={{ 
-            fontSize: "15px", 
-            fontWeight: "700", 
-            color: "#64748b", // 더 진한 회색
-            marginTop: "12px",
-            letterSpacing: "3px",
-            wordBreak: "keep-all"
+            fontSize: "19px",       // 글씨 크기 확대
+            fontWeight: "800",      // 조금 더 두껍게
+            color: "#475569",       // 조금 더 진하게 하여 가독성 확보
+            marginTop: "10px",
+            letterSpacing: "4.5px", // 자간을 넓혀서 S-Power의 너비와 맞춤
+            wordBreak: "keep-all",
+            textAlign: "center",
+            width: "100%",
+            display: "block"
           }}>
             안산복합화력발전소
           </div>
         </div>
 
-        {/* 시작하기 카드 및 나머지 하단 코드는 동일 */}
+        {/* 시작하기 카드 */}
         <div style={{ backgroundColor: "white", borderRadius: "24px", boxShadow: "0 10px 40px rgba(0,0,0,0.08)", padding: "40px 24px", textAlign: "center", marginBottom: "20px" }}>
           <p style={{ color: "#64748b", fontSize: "16px", marginBottom: "8px" }}>방문신청을 하시려면</p>
           <h2 style={{ fontSize: "22px", fontWeight: "bold", color: "#1e293b", marginBottom: "30px", lineHeight: "1.4" }}>
